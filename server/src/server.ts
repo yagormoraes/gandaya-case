@@ -1,15 +1,7 @@
-import express, {Request, Response} from "express"
+import app from "./app";
 
-const app = express()
-const port = 3000
-
-app.use(express.json())
-
-app.get("/", (req: Request, res: Response) => {
-    res.send("Hellow World")
-})
-
+const port = 3000;
 
 app.listen(port, () => {
-    console.log(`App listening at http://localhost:${port}`)
-})
+    console.log(`App listening at http://localhost:${port}`);
+});
