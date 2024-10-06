@@ -5,7 +5,7 @@ services:
     image: mysql:8.0
     container_name: my_shop_mysql
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: shop_db
       MYSQL_USER: shop_user
       MYSQL_PASSWORD: shop_password
