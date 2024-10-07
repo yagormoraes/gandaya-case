@@ -44,3 +44,25 @@ CREATE TABLE IF NOT EXISTS Menu (
 INSERT INTO Menu (item, price, availableQuantity) VALUES ('Gin', 40.00, 10);
 INSERT INTO Menu (item, price, availableQuantity) VALUES ('Caipirinha de limão', 28.00, 5);
 INSERT INTO Menu (item, price, availableQuantity) VALUES ('Cerveja Heineken', 45.50, 8);
+
+
+-- Tabela de checkout para monitorar o status de compras
+CREATE TABLE IF NOT EXISTS Checkout (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT,
+    status ENUM('in_progress', 'completed', 'abandoned', 'insufficient_funds') NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES User(id)
+);
+
+-- Tabela de checkout_items para armazenar os itens de cada checkout
+CREATE TABLE IF NOT EXISTS CheckoutItems (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    checkoutId INT,
+    menuItemId INT,
+    quantity INT NOT NULL,
+    FOREIGN KEY (checkoutId) REFERENCES Checkout(id),
+    FOREIGN KEY (menuItemId) REFERENCES Menu(id)
+);
