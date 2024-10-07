@@ -10,7 +10,7 @@ datasource db {
 model User {
   id        Int               @id @default(autoincrement())
   name      String            @db.VarChar(255)
-  balance   Decimal           @db.Decimal(10, 2)
+  balance Float
   checkouts Checkout[]
   purchases PurshaceHistory[]
 }
@@ -18,11 +18,11 @@ model User {
 model PurshaceHistory {
   id       Int      @id @default(autoincrement())
   userId   Int?
+  user     User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "PurshaceHistory_ibfk_1")
   item     String   @db.VarChar(255)
   price    Decimal  @db.Decimal(10, 2)
   quantity Int
-  saleDate DateTime @default(now()) @db.DateTime(0)
-  user     User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "PurshaceHistory_ibfk_1")
+  saleDate  DateTime @default(now())
 
   @@index([userId], map: "userId")
 }
@@ -39,11 +39,11 @@ model Menu {
 model Checkout {
   id        Int             @id @default(autoincrement())
   userId    Int?
-  status    Checkout_status
-  total     Decimal         @db.Decimal(10, 2)
-  createdAt DateTime        @default(now()) @db.DateTime(0)
-  updatedAt DateTime?       @updatedAt @db.DateTime(0)
   user      User?           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Checkout_ibfk_1")
+  status    Checkout_status
+  total     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   items     CheckoutItems[]
 
   @@index([userId], map: "userId")
