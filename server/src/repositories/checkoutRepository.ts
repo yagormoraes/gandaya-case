@@ -1,9 +1,9 @@
-import { PrismaClient, Checkout_status } from '@prisma/client';
-
+import { PrismaClient } from '@prisma/client';
+import { CheckoutItemInput, CheckoutStatus } from '../types';
 
 const prisma = new PrismaClient();
 
-const createCheckout = (userId: number, items: any[], total: number) => {
+const createCheckout = (userId: number, items: CheckoutItemInput[], total: number) => {
     return prisma.checkout.create({
         data: {
             userId: userId,
@@ -20,13 +20,14 @@ const createCheckout = (userId: number, items: any[], total: number) => {
     });
 };
 
-const updateCheckoutStatus = (checkoutId: number, status: Checkout_status) => {
+const updateCheckoutStatus = (checkoutId: number, status: CheckoutStatus) => {
     return prisma.checkout.update({
         where: { id: checkoutId },
         data: { status: status }
     });
 };
-const recordPurchaseHistory = async (userId: number, items: any[]) => {
+
+const recordPurchaseHistory = async (userId: number, items: CheckoutItemInput[]) => {
     const detailedItems = await Promise.all(
         items.map(async (item) => {
             const menuItem = await prisma.menu.findUnique({
@@ -39,7 +40,7 @@ const recordPurchaseHistory = async (userId: number, items: any[]) => {
 
             return {
                 userId,
-                item: menuItem.item, 
+                item: menuItem.item,
                 price: Number(menuItem.price),
                 quantity: item.quantity,
             };
@@ -49,6 +50,5 @@ const recordPurchaseHistory = async (userId: number, items: any[]) => {
         data: detailedItems,
     });
 };
-
 
 export default { createCheckout, updateCheckoutStatus, recordPurchaseHistory };

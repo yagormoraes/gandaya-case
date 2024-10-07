@@ -1,8 +1,9 @@
 import checkoutRepository from '../repositories/checkoutRepository';
 import userService from './userService';
 import menuService from './menuService';
+import { CheckoutItemInput } from '../types';
 
-const processCheckout = async (userId: number, items: any[]) => {
+const processCheckout = async (userId: number, items: CheckoutItemInput[]) => {
     const user = await userService.getUserBalance(userId);
     if (!user) throw new Error('User not found');
 
@@ -25,12 +26,11 @@ const processCheckout = async (userId: number, items: any[]) => {
     const checkout = await checkoutRepository.createCheckout(userId, items, total);
 
     await userService.modifyUserBalance(userId, -total);
-    await menuService.updateMenuItemsStock(items,'decrement');
+    await menuService.updateMenuItemsStock(items, 'decrement');
     await checkoutRepository.updateCheckoutStatus(checkout.id, 'completed');
     await checkoutRepository.recordPurchaseHistory(userId, items);
 
     return { message: 'Purchase completed successfully', checkout };
 };
-
 
 export default { processCheckout };

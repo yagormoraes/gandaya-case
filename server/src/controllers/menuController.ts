@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
+import { StockUpdateItem, StockOperation } from '../types';
 import menuService from '../services/menuService';
 
-export const getMenuItems = async (req: Request, res: Response) => {
+export const getMenuItems = async (req: Request, res: Response): Promise<void> => {
     try {
         const menuItems = await menuService.getMenuItems();
         res.json(menuItems);
@@ -11,13 +12,17 @@ export const getMenuItems = async (req: Request, res: Response) => {
 };
 
 export const updateProductQuantity = async (req: Request, res: Response): Promise<void> => {
-    const { menuItemId, quantityToAdd } = req.body;
+    const { menuItemId, quantityToAdd }: { menuItemId: number; quantityToAdd: number } = req.body;
 
     try {
         if (quantityToAdd < 0) {
             res.status(400).json({ error: 'Quantity must be a positive number' });
         }
-        await menuService.updateMenuItemsStock([{ menuItemId, quantity: quantityToAdd }], 'increment');
+
+        const stockUpdateItem: StockUpdateItem = { menuItemId, quantity: quantityToAdd };
+        const operation: StockOperation = 'increment';
+
+        await menuService.updateMenuItemsStock([stockUpdateItem], operation);
         res.json({ message: 'Product quantity updated successfully' });
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -25,4 +30,3 @@ export const updateProductQuantity = async (req: Request, res: Response): Promis
         res.status(500).json({ error: errorMessage });
     }
 };
-

@@ -1,14 +1,15 @@
 import menuRepository from '../repositories/menuRepository';
+import { MenuItem, StockUpdateItem, StockOperation } from '../types';
 
-const getMenuItems = () => {
+const getMenuItems = (): Promise<MenuItem[]> => {
     return menuRepository.getMenuItems();
 };
 
-const getMenuItemById = (menuItemId: number) => {
+const getMenuItemById = (menuItemId: number): Promise<MenuItem | null> => {
     return menuRepository.getMenuItemById(menuItemId);
 };
 
-const updateMenuItemsStock = (items: any[],  operation: 'increment' | 'decrement') => {
+const updateMenuItemsStock = (items: StockUpdateItem[], operation: StockOperation): Promise<MenuItem[]> => {
     return menuRepository.updateMenuItemsStock(items, operation);
 };
 
