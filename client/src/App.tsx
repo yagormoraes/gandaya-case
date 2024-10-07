@@ -1,9 +1,10 @@
 import './App.css';
+import Wallet from './pages/wallet';
 
 function App() {
   return (
     <div className="App">
-      teste
+      <Wallet/>
     </div>
   );
 }
