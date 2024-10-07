@@ -1,35 +1,24 @@
-export const getMenuFromDB = () => {
-    return [
-        {
-            id: 1,
-            item: "Gin",
-            price: 40.00,
-            availableQuantity: 5
-        }, {
-            id: 2,
-            item: "Bear Mate",
-            price: 18.00,
-            availableQuantity: 5
-        }, {
-            id: 3,
-            item: "Caipirinha de limão",
-            price: 28.00,
-            availableQuantity: 5
-        }, {
-            id: 4,
-            item: "Caipirinha de morango",
-            price: 28.00,
-            availableQuantity: 5
-        }, {
-            id: 5,
-            item: "Fitzgerald da casa",
-            price: 28.00,
-            availableQuantity: 5
-        },{
-            id: 6,
-            item: "Cosmopolitam",
-            price: 45.00,
-            availableQuantity: 5
-        },
-    ];
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+const getMenuItems = () => {
+    return prisma.menu.findMany();
 };
+
+const getMenuItemById = (menuItemId: number) => {
+    return prisma.menu.findUnique({ where: { id: menuItemId } });
+};
+
+const updateMenuItemsStock = (items: any[]) => {
+    return Promise.all(items.map(item => {
+        return prisma.menu.update({
+            where: { id: item.menuItemId },
+            data: {
+                availableQuantity: { decrement: item.quantity }
+            }
+        });
+    }));
+};
+
+export default { getMenuItems, getMenuItemById, updateMenuItemsStock };

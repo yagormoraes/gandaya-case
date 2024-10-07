@@ -1,5 +1,15 @@
-import { getMenuFromDB } from "../repositories/menuRepository";
+import menuRepository from '../repositories/menuRepository';
 
-export const getMenu = () => {
-    return getMenuFromDB();
+const getMenuItems = () => {
+    return menuRepository.getMenuItems();
 };
+
+const getMenuItemById = (menuItemId: number) => {
+    return menuRepository.getMenuItemById(menuItemId);
+};
+
+const updateMenuItemsStock = (items: any[]) => {
+    return menuRepository.updateMenuItemsStock(items);
+};
+
+export default { getMenuItems, getMenuItemById, updateMenuItemsStock };
