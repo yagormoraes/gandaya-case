@@ -24,9 +24,8 @@ const processCheckout = async (userId: number, items: any[]) => {
 
     const checkout = await checkoutRepository.createCheckout(userId, items, total);
 
-    // Remover o saldo do usuário
     await userService.modifyUserBalance(userId, -total);
-    await menuService.updateMenuItemsStock(items);
+    await menuService.updateMenuItemsStock(items,'decrement');
     await checkoutRepository.updateCheckoutStatus(checkout.id, 'completed');
     await checkoutRepository.recordPurchaseHistory(userId, items);
 
