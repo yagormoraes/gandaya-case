@@ -85,6 +85,7 @@ CREATE TABLE `Menu` (
   `item` varchar(255) NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `availableQuantity` int NOT NULL,
+  `image` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -95,7 +96,7 @@ CREATE TABLE `Menu` (
 
 LOCK TABLES `Menu` WRITE;
 /*!40000 ALTER TABLE `Menu` DISABLE KEYS */;
-INSERT INTO `Menu` VALUES (1,'Gin',40.00,10),(2,'Caipirinha de limÃ£o',28.00,5),(3,'Cerveja Heineken',45.50,8);
+INSERT INTO `Menu` VALUES (1,'Gin',40.00,10,'gin.png'),(2,'Caipirinha de limÃ£o',28.00,5,'caipirinha-limao.png'),(3,'Cerveja Heineken',45.50,8,'heineken.png');
 /*!40000 ALTER TABLE `Menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,7 +126,7 @@ CREATE TABLE `PurshaceHistory` (
 
 LOCK TABLES `PurshaceHistory` WRITE;
 /*!40000 ALTER TABLE `PurshaceHistory` DISABLE KEYS */;
-INSERT INTO `PurshaceHistory` VALUES (1,1,'Gin',40.00,1,'2024-10-07 03:35:35'),(2,1,'Cerveja Heineken',45.50,2,'2024-10-07 03:35:35'),(3,2,'Caipirinha de limÃ£o',28.00,1,'2024-10-07 03:35:35');
+INSERT INTO `PurshaceHistory` VALUES (1,1,'Gin',40.00,1,'2024-10-07 14:40:22'),(2,1,'Cerveja Heineken',45.50,2,'2024-10-07 14:40:22'),(3,2,'Caipirinha de limÃ£o',28.00,1,'2024-10-07 14:40:22');
 /*!40000 ALTER TABLE `PurshaceHistory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -163,4 +164,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-07  3:37:26
+-- Dump completed on 2024-10-07 14:47:04

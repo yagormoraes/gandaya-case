@@ -37,13 +37,14 @@ CREATE TABLE IF NOT EXISTS Menu (
     id INT AUTO_INCREMENT PRIMARY KEY,
     item VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    availableQuantity INT NOT NULL
+    availableQuantity INT NOT NULL,
+    image VARCHAR(255)
 );
 
 -- Inserir itens no menu
-INSERT INTO Menu (item, price, availableQuantity) VALUES ('Gin', 40.00, 10);
-INSERT INTO Menu (item, price, availableQuantity) VALUES ('Caipirinha de limão', 28.00, 5);
-INSERT INTO Menu (item, price, availableQuantity) VALUES ('Cerveja Heineken', 45.50, 8);
+INSERT INTO Menu (item, price, availableQuantity, image) VALUES ('Gin', 40.00, 10, 'gin.png');
+INSERT INTO Menu (item, price, availableQuantity, image) VALUES ('Caipirinha de limão', 28.00, 5, 'caipirinha-limao.png');
+INSERT INTO Menu (item, price, availableQuantity, image) VALUES ('Cerveja Heineken', 45.50, 8, 'heineken.png');
 
 
 -- Tabela de checkout para monitorar o status de compras

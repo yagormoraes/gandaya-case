@@ -33,6 +33,7 @@ model Menu {
   price             Decimal         @db.Decimal(10, 2)
   availableQuantity Int
   checkoutItems     CheckoutItems[]
+  image            String?
 }
 
 model Checkout {

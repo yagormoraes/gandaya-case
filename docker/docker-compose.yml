@@ -3,7 +3,7 @@ version: "3.8"
 services:
   mysql:
     image: mysql:8.0
-    container_name: my_shop_mysql
+    container_name: gandaya_wallet_mysql
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: shop_db
@@ -14,8 +14,8 @@ services:
     volumes:
       - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - shop_network
+      - gandaya_wallet_network
 
 networks:
-  shop_network:
+  gandaya_wallet_network:
     driver: bridge
