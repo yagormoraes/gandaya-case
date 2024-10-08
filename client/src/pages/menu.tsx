@@ -40,7 +40,6 @@ export default function Menu() {
         setIsModalOpen(true);
     };
 
-
     const handleAddToCart = () => {
         if (selectedItem) {
             const itemWithQuantity = {
@@ -50,35 +49,36 @@ export default function Menu() {
             addToCart(itemWithQuantity, quantityToAdd);
         }
         setIsModalOpen(false);
-        setQuantityToAdd(1)
+        setQuantityToAdd(1);
     };
-
 
     const handleIncreaseQuantity = (item: MenuItem) => {
         const cartItem = cart[item.id];
         const newQuantity = (cartItem ? cartItem.quantity : 0) + 1;
-        addToCart(item, newQuantity);
+        const itemWithQuantity = { ...item, quantity: newQuantity };
+        addToCart(itemWithQuantity, newQuantity);
     };
-
 
     const handleDecreaseQuantity = (item: MenuItem) => {
         const cartItem = cart[item.id];
         if (cartItem.quantity > 1) {
             const newQuantity = cartItem.quantity - 1;
-            addToCart(item, newQuantity);
+            const itemWithQuantity = { ...item, quantity: newQuantity };
+            addToCart(itemWithQuantity, newQuantity);
         } else {
-            removeFromCart(item.id);  
+            removeFromCart(item.id);
         }
-    };
-
-    const handleRemoveItem = (item: MenuItem) => {
-        removeFromCart(item.id);
     };
 
     const handleCancel = () => {
         setSelectedItem(null);
         setQuantityToAdd(1);
         setIsModalOpen(false);
+    };
+
+    // Navega para a página de checkout, passando o carrinho como state
+    const handleCheckout = () => {
+        navigate("/checkout", { state: { cart, total } });
     };
 
     return (
@@ -149,7 +149,7 @@ export default function Menu() {
                         </p>
                     </div>
 
-                    <Button onClick={() => navigate("/checkout")}>Confirmar</Button>
+                    <Button onClick={handleCheckout}>Confirmar</Button>
                 </div>
             </div>
         </>
