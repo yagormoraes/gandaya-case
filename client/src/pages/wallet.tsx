@@ -4,13 +4,15 @@ import Header from "../components/Header";
 import WalletBalance from "../components/WalletBalance";
 import PurchaseHistoryComponent from "../components/PurchaseHistory";
 import Button from "../components/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function Wallet() {
+    const navigate = useNavigate();
     const userId = 1;
     const { balance, purchaseHistory, addUserBalance, isLoading } = useWallet(userId);
     const [isBalanceVisible, setIsBalanceVisible] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [amountToAdd, setAmountToAdd] = useState(''); // Agora será uma string formatada com máscara
+    const [amountToAdd, setAmountToAdd] = useState('');
 
     const toggleBalanceVisibility = () => setIsBalanceVisible(!isBalanceVisible);
 
@@ -29,7 +31,7 @@ export default function Wallet() {
 
 
     const handleAddBalance = async () => {
-        const numericValue = parseFloat(amountToAdd.replace(/[R$\s.]/g, '').replace(',', '.')); // Remove os caracteres de formatação
+        const numericValue = parseFloat(amountToAdd.replace(/[R$\s.]/g, '').replace(',', '.'));
         if (isNaN(numericValue)) return;
 
         await addUserBalance(numericValue);
@@ -39,19 +41,19 @@ export default function Wallet() {
     return (
         <div className="bg-primary w-auto h-screen flex flex-col justify-between">
             <div>
-                <Header headerName={"Carteira"}/>
+                <Header title={"Carteira"}/>
                 <WalletBalance
                     balance={balance}
                     isBalanceVisible={isBalanceVisible}
                     isLoading={isLoading}
-                    toggleBalanceVisibility={toggleBalanceVisibility}
+                    toggleBalanceVisibility={() => toggleBalanceVisibility()}
                 />
                 <PurchaseHistoryComponent purchaseHistory={purchaseHistory} />
 
             </div>
 
             <div className="mb-5 flex items-center justify-around mx-3">
-                <Button onClick={() => alert("botao para comprar produtos")}>Comprar produtos</Button>
+                <Button onClick={() => navigate("/menu")}>Comprar produtos</Button>
                 <Button onClick={() => setIsModalOpen(true)}>Recarregar saldo</Button>
             </div>
 
@@ -68,7 +70,7 @@ export default function Wallet() {
                         />
                         <div className="flex justify-end space-x-3">
                             <Button onClick={() => setIsModalOpen(false)} className="bg-gray-300">Cancelar</Button>
-                            <Button onClick={handleAddBalance}>Adicionar</Button>
+                            <Button onClick={() => handleAddBalance()}>Adicionar</Button>
                         </div>
                     </div>
                 </div>

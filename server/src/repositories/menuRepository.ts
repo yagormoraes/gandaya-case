@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { StockUpdateItem, StockOperation, MenuItem } from '../types'; // Importar os tipos necessários
+import { StockUpdateItem, StockOperation, MenuItem } from '../types';
 
 const prisma = new PrismaClient();
 

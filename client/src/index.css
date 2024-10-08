@@ -7,4 +7,5 @@
 
 body {
     @apply font-fira;
+    @apply bg-primary
 }
