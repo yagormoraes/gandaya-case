@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
 import { useMenuItems, MenuItem } from "../hooks/useMenuItems";
 import Card from "../components/Card";
+import SearchBar from "../components/SearchBar";
 
 export default function Menu() {
     const { menuItems, loading, error } = useMenuItems();
@@ -15,7 +16,7 @@ export default function Menu() {
     const [quantityToAdd, setQuantityToAdd] = useState<number>(1);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-    const { cart, addToCart, removeFromCart, total } = useCart();
+    const { cart, addToCart, removeFromCart, total } = useCart(); 
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,17 +40,39 @@ export default function Menu() {
         setIsModalOpen(true);
     };
 
+
     const handleAddToCart = () => {
         if (selectedItem) {
             const itemWithQuantity = {
                 ...selectedItem,
                 quantity: quantityToAdd,
             };
-
             addToCart(itemWithQuantity, quantityToAdd);
         }
         setIsModalOpen(false);
-        setQuantityToAdd(1);
+        setQuantityToAdd(1)
+    };
+
+
+    const handleIncreaseQuantity = (item: MenuItem) => {
+        const cartItem = cart[item.id];
+        const newQuantity = (cartItem ? cartItem.quantity : 0) + 1;
+        addToCart(item, newQuantity);
+    };
+
+
+    const handleDecreaseQuantity = (item: MenuItem) => {
+        const cartItem = cart[item.id];
+        if (cartItem.quantity > 1) {
+            const newQuantity = cartItem.quantity - 1;
+            addToCart(item, newQuantity);
+        } else {
+            removeFromCart(item.id);  
+        }
+    };
+
+    const handleRemoveItem = (item: MenuItem) => {
+        removeFromCart(item.id);
     };
 
     const handleCancel = () => {
@@ -61,14 +84,13 @@ export default function Menu() {
     return (
         <>
             <Header title="Cardápio" showBackArrow />
-            <div className="p-4 ">
-                <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    placeholder="Buscar produtos..."
-                    className="border p-2 mb-4 w-full rounded-md"
+            <div className="px-4 ">
+                <SearchBar
+                    searchTerm={searchTerm}
+                    onSearchChange={handleSearch}
+                    placeholder="Buscar produto"
                 />
+
                 {loading ? (
                     <div>Carregando...</div>
                 ) : error ? (
@@ -81,12 +103,11 @@ export default function Menu() {
                                 item={item}
                                 cartItem={cart[item.id]}
                                 onSelectItem={handleSelectItem}
+                                onIncreaseQuantity={handleIncreaseQuantity}
+                                onDecreaseQuantity={handleDecreaseQuantity}
                             />
                         ))}
                     </div>
-
-
-
                 )}
             </div>
 
@@ -96,10 +117,10 @@ export default function Menu() {
                         <img
                             src={`/assets/${selectedItem.image}`}
                             alt={selectedItem.item}
-                            className="w-full h-48 object-cover rounded-md"
+                            className="w-48 h-48 object-cover rounded-md bg-white mx-auto"
                         />
-                        <h2 className="text-xl font-bold mt-4">{selectedItem.item}</h2>
-                        <p className="text-sm">
+                        <h2 className="text-xl text-white font-bold mt-4">{selectedItem.item}</h2>
+                        <p className="text-sm text-secondary font-bold">
                             R$ {Number(selectedItem.price).toFixed(2).replace(".", ",")}
                         </p>
                         <input
@@ -122,17 +143,13 @@ export default function Menu() {
             <div className="fixed bottom-0 w-full bg-primary-dark p-4 shadow-md">
                 <div className="flex justify-between items-center">
                     <div>
-                        <h3 className="text-sm text-white">
-                            Valor total:
-                        </h3>
+                        <h3 className="text-sm text-white">Valor total:</h3>
                         <p className="font-bold text-white text-3xl">
                             R$ {total.toFixed(2).replace(".", ",")}
                         </p>
                     </div>
 
-                    <Button onClick={() => navigate("/checkout")}>
-                        Confirmar
-                    </Button>
+                    <Button onClick={() => navigate("/checkout")}>Confirmar</Button>
                 </div>
             </div>
         </>

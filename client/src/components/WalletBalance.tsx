@@ -16,7 +16,7 @@ export default function WalletBalance({ balance, isBalanceVisible, isLoading, to
             <div>
                 <div className="text-primary-light text-sm pb-1 font-bold">Saldo disponível</div>
                 <div className="text-3xl text-white font-bold">
-                    {isLoading ? "Carregando..." : (isBalanceVisible ? `R$ ${balance.toFixed(2).replace('.', ',')}` : '••••')}
+                    {isLoading ? "Carregando..." : (isBalanceVisible ? `R$ ${balance.toFixed(2).replace('.', ',')}` : 'R$ ••••')}
                 </div>
             </div>
             <div>

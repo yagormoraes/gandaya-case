@@ -10,30 +10,33 @@ interface Cart {
 }
 
 export const useCart = () => {
-  const [cart, setCart] = useState<Cart>({});
-  const [total, setTotal] = useState<number>(0);
+  const [cart, setCart] = useState<{ [key: number]: CartItem }>({});
+  const [total, setTotal] = useState(0);
 
-  const addToCart = (item: CartItem, quantity: number) => {
-    setCart((prev: Cart) => {
-      const newCart = { ...prev, [item.id]: { ...item, quantity } };
-      updateTotal(newCart);
-      return newCart;
+  const addToCart = (item: MenuItem, quantity: number) => {
+    setCart((prevCart) => {
+      const updatedCart = {
+        ...prevCart,
+        [item.id]: {
+          ...item,
+          quantity: quantity,
+        },
+      };
+      updateTotal(updatedCart);
+      return updatedCart;
     });
   };
 
   const removeFromCart = (itemId: number) => {
-    setCart((prev: Cart) => {
-      const { [itemId]: _, ...newCart } = prev;
-      updateTotal(newCart);
-      return newCart;
+    setCart((prevCart) => {
+      const { [itemId]: _, ...updatedCart } = prevCart;
+      updateTotal(updatedCart);
+      return updatedCart;
     });
   };
 
-  const updateTotal = (cart: Cart) => {
-    const newTotal = Object.values(cart).reduce(
-      (acc: number, item: CartItem) => acc + item.price * item.quantity,
-      0
-    );
+  const updateTotal = (cart: { [key: number]: CartItem }) => {
+    const newTotal = Object.values(cart).reduce((acc, item) => acc + item.price * item.quantity, 0);
     setTotal(newTotal);
   };
 
