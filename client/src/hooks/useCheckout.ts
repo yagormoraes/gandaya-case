@@ -25,28 +25,32 @@ export const useCheckout = () => {
         }
     };
 
-    const completeCheckout = async (cart: { [key: number]: CartItem }): Promise<boolean> => {
+    const completeCheckout = async (cart: { [key: number]: CartItem }): Promise<{ success: boolean, balance?: number }> => {
         try {
             const items = Object.values(cart).map(cartItem => ({
                 menuItemId: cartItem.id,
                 quantity: cartItem.quantity
             }));
-
+    
             const body = {
                 userId,
                 items
             };
-
+    
             const response = await axios.post("http://localhost:3001/checkout", body);
+    
+            const wallet = await axios.get(`http://localhost:3001/balance/${userId}`)
+            console.log("wallet", wallet)
             if (response.data.message === "Purchase completed successfully") {
-                return true;
+                return { success: true, balance: wallet.data.balance}; 
             }
-            return false;
+            return { success: false };
         } catch (error) {
             console.error("Erro ao completar o checkout:", error);
-            return false;
+            return { success: false };
         }
     };
+    
 
     const failCheckout = async (cart: { [key: number]: CartItem }) => {
         try {

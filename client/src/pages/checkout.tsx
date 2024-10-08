@@ -4,13 +4,16 @@ import Header from "../components/Header";
 import Button from "../components/Button";
 import { CartItem, useCart } from "../hooks/useCart";
 import { useCheckout } from "../hooks/useCheckout";
+import Notification from "../components/Notification";
 
 export default function Checkout() {
     const location = useLocation();
     const navigate = useNavigate();
     const [isProcessing, setIsProcessing] = useState(false);
-
-    const { completeCheckout, abandonCheckout } = useCheckout(); 
+    const [successNotification, setSuccessNotification] = useState(false)
+    const [errorNotification, setErrorNotification] = useState(false)
+    const [balance, setBalance] = useState<number | null>(null);
+    const { completeCheckout, abandonCheckout } = useCheckout();
     const { addToCart, removeFromCart } = useCart();
     const { cart, total }: { cart: { [key: number]: CartItem }, total: number } = location.state || { cart: {}, total: 0 };
 
@@ -20,17 +23,19 @@ export default function Checkout() {
         setIsProcessing(true);
 
         try {
-            const success = await completeCheckout(cart);
-            if (success) {
-                alert("Compra realizada com sucesso!");
+            const result = await completeCheckout(cart); 
+            if (result.success) {
+                setBalance(result.balance || 0) 
+                console.log("result", result.balance)
+                setSuccessNotification(true);
             } else {
-                alert("Erro ao processar a compra.");
+                setErrorNotification(true);
             }
         } catch (error) {
             console.error("Erro ao confirmar compra:", error);
+            setErrorNotification(true);
         } finally {
             setIsProcessing(false);
-            navigate("/");
         }
     };
 
@@ -56,13 +61,13 @@ export default function Checkout() {
     };
 
     const handleGoBackToMenu = async () => {
-        await abandonCheckout(cart); 
+        await abandonCheckout(cart);
         navigate("/menu");
     };
 
     return (
         <>
-            <Header title="Checkout" showBackArrow onClick={() => handleGoBackToMenu()}/>
+            <Header title="Checkout" showBackArrow onClick={() => handleGoBackToMenu()} />
 
             <div className="px-4 py-6">
                 {Object.keys(cart).length > 0 ? (
@@ -118,6 +123,28 @@ export default function Checkout() {
                     </Button>
                 </div>
             </div>
+            {successNotification && (
+                <Notification
+                    message="Compra realizada com sucesso!"
+                    type="success"
+                    onClose={() => {
+                        setSuccessNotification(false)
+                        navigate("/")
+                    }}
+                    balance={balance}
+                />
+            )}
+            {errorNotification && (
+                <Notification
+                    message="Erro ao processar a compra."
+                    type="error"
+                    onClose={() => {
+                        navigate("/")
+                        setErrorNotification(false)
+                    }}
+                />
+            )}
+
         </>
     );
 }
