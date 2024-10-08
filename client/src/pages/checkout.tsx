@@ -2,42 +2,67 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Button from "../components/Button";
-import { CartItem } from "../hooks/useCart";  // Certifique-se de importar o tipo CartItem corretamente
+import { CartItem, useCart } from "../hooks/useCart";
 import { useCheckout } from "../hooks/useCheckout";
 
 export default function Checkout() {
     const location = useLocation();
     const navigate = useNavigate();
-    const [checkoutStatus, setCheckoutStatus] = useState<string>("in_progress");
+    const [isProcessing, setIsProcessing] = useState(false);
 
-    const { initiateCheckout, completeCheckout, failCheckout, abandonCheckout } = useCheckout();
-
-    // Recuperando o carrinho e o total do state passado via navegação
+    const { completeCheckout, abandonCheckout } = useCheckout(); 
+    const { addToCart, removeFromCart } = useCart();
     const { cart, total }: { cart: { [key: number]: CartItem }, total: number } = location.state || { cart: {}, total: 0 };
 
-    useEffect(() => {
-        initiateCheckout();
-    }, [initiateCheckout]);
-
-
     const handleConfirmPurchase = async () => {
+        if (isProcessing) return;
+
+        setIsProcessing(true);
+
         try {
-            const userHasSufficientFunds = true;
-            if (userHasSufficientFunds) {
-                await completeCheckout();
+            const success = await completeCheckout(cart);
+            if (success) {
                 alert("Compra realizada com sucesso!");
             } else {
-                await failCheckout();
-                alert("Saldo insuficiente!");
+                alert("Erro ao processar a compra.");
             }
         } catch (error) {
-            console.error("Erro ao confirmar compra", error);
+            console.error("Erro ao confirmar compra:", error);
+        } finally {
+            setIsProcessing(false);
+            navigate("/");
         }
+    };
+
+    const handleIncreaseQuantity = (cartItem: CartItem) => {
+        const newQuantity = cartItem.quantity + 1;
+
+        if (newQuantity <= cartItem.availableQuantity) {
+            const itemWithQuantity = { ...cartItem, quantity: newQuantity };
+            addToCart(itemWithQuantity, newQuantity);
+        } else {
+            alert(`Só há ${cartItem.availableQuantity} unidades disponíveis.`);
+        }
+    };
+
+    const handleDecreaseQuantity = (cartItem: CartItem) => {
+        if (cartItem.quantity > 1) {
+            const newQuantity = cartItem.quantity - 1;
+            const itemWithQuantity = { ...cartItem, quantity: newQuantity };
+            addToCart(itemWithQuantity, newQuantity);
+        } else {
+            removeFromCart(cartItem.id);
+        }
+    };
+
+    const handleGoBackToMenu = async () => {
+        await abandonCheckout(cart); 
+        navigate("/menu");
     };
 
     return (
         <>
-            <Header title="Checkout" showBackArrow />
+            <Header title="Checkout" showBackArrow onClick={() => handleGoBackToMenu()}/>
 
             <div className="px-4 py-6">
                 {Object.keys(cart).length > 0 ? (
@@ -57,11 +82,17 @@ export default function Checkout() {
 
                             <div className="flex items-center">
                                 <div className="bg-white border-secondary border-2 flex items-center rounded-lg justify-between h-8 w-20">
-                                    <button className="flex flex-col items-center justify-center bg-secondary text-black px-1 py-1 rounded-l-lg h-full">
+                                    <button
+                                        onClick={() => handleDecreaseQuantity(cartItem)}
+                                        className="flex flex-col items-center justify-center bg-secondary text-black px-1 py-1 rounded-l-lg h-full"
+                                    >
                                         −
                                     </button>
                                     <span className="text-black text-xs font-bold mx-2">{cartItem.quantity}</span>
-                                    <button className="flex flex-col items-center justify-center bg-secondary text-black px-1 py-1 rounded-r-lg h-full">
+                                    <button
+                                        onClick={() => handleIncreaseQuantity(cartItem)}
+                                        className="flex flex-col items-center justify-center bg-secondary text-black px-1 py-1 rounded-r-lg h-full"
+                                    >
                                         +
                                     </button>
                                 </div>
@@ -82,7 +113,7 @@ export default function Checkout() {
                         </p>
                     </div>
 
-                    <Button onClick={handleConfirmPurchase} className="bg-secondary text-black px-5 py-2 rounded-full">
+                    <Button onClick={handleConfirmPurchase} disabled={isProcessing} className="bg-secondary text-black px-5 py-2 rounded-full">
                         Confirmar
                     </Button>
                 </div>

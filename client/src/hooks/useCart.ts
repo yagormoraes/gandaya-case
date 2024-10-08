@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 export interface CartItem {
+  availableQuantity: number;
   id: number;
   item: string;
   price: number;
@@ -16,12 +17,12 @@ export const useCart = () => {
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
-      setCart(JSON.parse(storedCart)); // Carrega o carrinho do localStorage
+      setCart(JSON.parse(storedCart)); 
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart)); // Atualiza o localStorage sempre que o carrinho muda
+    localStorage.setItem("cart", JSON.stringify(cart));
     updateTotal();
   }, [cart]);
 

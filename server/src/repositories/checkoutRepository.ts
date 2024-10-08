@@ -46,9 +46,43 @@ const recordPurchaseHistory = async (userId: number, items: CheckoutItemInput[])
             };
         })
     );
+
     return prisma.purshaceHistory.createMany({
         data: detailedItems,
     });
 };
 
-export default { createCheckout, updateCheckoutStatus, recordPurchaseHistory };
+const getUserCheckouts = async (userId: number) => {
+    return prisma.checkout.findMany({
+        where: {
+            userId: userId
+        },
+        include: {
+            items: true 
+        }
+    });
+};
+
+
+const findCheckoutByStatus = (userId: number, status: CheckoutStatus) => {
+    return prisma.checkout.findFirst({
+        where: {
+            userId,
+            status,
+        },
+    });
+};
+
+
+
+const findInProgressCheckout = (userId: number) => {
+    return prisma.checkout.findFirst({
+        where: {
+            userId,
+            status: 'in_progress'
+        }
+    });
+};
+
+
+export default { createCheckout, updateCheckoutStatus, recordPurchaseHistory, findCheckoutByStatus, findInProgressCheckout, getUserCheckouts };

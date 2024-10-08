@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import userService from '../services/userService';
 import { User, PurchaseHistory, PurchaseHistoryResponse, ErrorResponse } from '../types/index'
 
+
 export const getUserBalance = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId: number = parseInt(req.params.id, 10);
     try {
@@ -37,8 +38,8 @@ export const addUserBalance = async (req: Request, res: Response, next: NextFunc
 
 
 export const getPurchaseHistory = async (
-    req: Request, 
-    res: Response, 
+    req: Request,
+    res: Response,
     next: NextFunction
 ): Promise<void> => {
     const userId: number = parseInt(req.params.id, 10);

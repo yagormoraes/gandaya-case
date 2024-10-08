@@ -1,6 +1,7 @@
 import userRepository from '../repositories/userRepository';
 import { User, PurchaseHistory } from '../types'; 
 
+
 const getUserBalance = (userId: number): Promise<User | null> => {
     return userRepository.getUserById(userId);
 };

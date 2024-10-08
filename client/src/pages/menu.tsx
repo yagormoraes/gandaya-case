@@ -46,7 +46,12 @@ export default function Menu() {
                 ...selectedItem,
                 quantity: quantityToAdd,
             };
-            addToCart(itemWithQuantity, quantityToAdd);
+
+            if (itemWithQuantity.quantity <= selectedItem.availableQuantity) {
+                addToCart(itemWithQuantity, quantityToAdd);
+            } else {
+                alert(`Só há ${selectedItem.availableQuantity} unidades disponíveis.`);
+            }
         }
         setIsModalOpen(false);
         setQuantityToAdd(1);
@@ -55,8 +60,13 @@ export default function Menu() {
     const handleIncreaseQuantity = (item: MenuItem) => {
         const cartItem = cart[item.id];
         const newQuantity = (cartItem ? cartItem.quantity : 0) + 1;
-        const itemWithQuantity = { ...item, quantity: newQuantity };
-        addToCart(itemWithQuantity, newQuantity);
+
+        if (newQuantity <= item.availableQuantity) {
+            const itemWithQuantity = { ...item, quantity: newQuantity };
+            addToCart(itemWithQuantity, newQuantity);
+        } else {
+            alert(`Só há ${item.availableQuantity} unidades disponíveis.`);
+        }
     };
 
     const handleDecreaseQuantity = (item: MenuItem) => {
@@ -76,7 +86,6 @@ export default function Menu() {
         setIsModalOpen(false);
     };
 
-    // Navega para a página de checkout, passando o carrinho como state
     const handleCheckout = () => {
         navigate("/checkout", { state: { cart, total } });
     };
@@ -123,11 +132,15 @@ export default function Menu() {
                         <p className="text-sm text-secondary font-bold">
                             R$ {Number(selectedItem.price).toFixed(2).replace(".", ",")}
                         </p>
+                        <p className="text-sm text-secondary font-bold">
+                            Estoque disponível: {selectedItem.availableQuantity}
+                        </p>
                         <input
                             type="number"
                             value={quantityToAdd}
-                            onChange={(e) => setQuantityToAdd(Number(e.target.value))}
+                            onChange={(e) => setQuantityToAdd(Math.min(Number(e.target.value), selectedItem.availableQuantity))} 
                             min={1}
+                            max={selectedItem.availableQuantity}
                             className="border p-2 w-full mt-2"
                         />
                         <div className="flex justify-end space-x-3 mt-4">
