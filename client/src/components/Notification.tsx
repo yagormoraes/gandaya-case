@@ -7,8 +7,8 @@ interface NotificationProps {
 
 export default function Notification({ message, onClose, type, balance }: NotificationProps) {
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg p-6 w-80 shadow-lg flex flex-col items-center space-y-4">
+        <div className="fixed inset-x-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-end z-[100]"> 
+            <div className="bg-white rounded-t-lg p-6 w-full max-w-lg shadow-lg flex flex-col items-center space-y-4 animate-slide-up">
                 <div>
                     <img 
                         src={type === 'success' ? '/assets/check.svg' : '/assets/deny.svg'} 
@@ -21,12 +21,12 @@ export default function Notification({ message, onClose, type, balance }: Notifi
                 </h3>
                 <p className="text-sm text-center text-gray-500">
                     {type === 'success' 
-                        ? `O seu saldo é de R$ ${balance?.toFixed(2).replace(".", ",")}` 
-                        : message}
+                        && `O seu saldo é de R$ ${balance?.toFixed(2).replace(".", ",")}` 
+                        }
                 </p>
                 <button
                     onClick={onClose}
-                    className="bg-lime-500 hover:bg-lime-600 text-white w-full py-2 rounded-full font-bold"
+                    className="bg-lime-500 hover:bg-lime-600 text-black w-full py-2 rounded-full font-bold"
                 >
                     Continuar
                 </button>
@@ -34,3 +34,5 @@ export default function Notification({ message, onClose, type, balance }: Notifi
         </div>
     );
 }
+
+

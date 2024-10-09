@@ -1,3 +1,5 @@
+import QuantityButton from './QuantityButton';
+
 interface CardProps {
   item: {
     id: number;
@@ -51,33 +53,20 @@ export default function Card({
           <img
             src={`/assets/${item.image}`}
             alt={item.item}
-            className={`w-28 h-28 rounded-md bg-white ${
+            className={`w-28 h-28 rounded-lg bg-white ${
               cartItem ? "border-secondary" : "border-transparent"
             } border-2`}
           />
         )}
 
         {cartItem && !isUnavailable && (
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 bg-white border-secondary border-2 flex items-center rounded-lg justify-between h-5 w-16">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onDecreaseQuantity(item);
-              }}
-              className="flex flex-col items-center justify-center bg-secondary text-black px-1 py-1 rounded-l-lg h-5"
-            >
-              −
-            </button>
-            <span className="text-black text-xs font-bold mx-1">{cartItem.quantity}</span>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onIncreaseQuantity(item);
-              }}
-              className="flex flex-col items-center justify-center bg-secondary text-black px-1 py-1 rounded-r-lg h-5"
-            >
-              +
-            </button>
+          <div className="absolute left-1/2 transform -translate-x-1/2 bottom-[-10px]">
+            <QuantityButton
+              quantity={cartItem.quantity}
+              availableQuantity={item.availableQuantity}
+              onIncrease={() => onIncreaseQuantity(item)}
+              onDecrease={() => onDecreaseQuantity(item)}
+            />
           </div>
         )}
       </div>

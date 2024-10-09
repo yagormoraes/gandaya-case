@@ -6,6 +6,7 @@ import PurchaseHistoryComponent from "../components/PurchaseHistory";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
+import InputBox from "../components/InputBox";
 
 export default function Wallet() {
     const navigate = useNavigate();
@@ -34,7 +35,6 @@ export default function Wallet() {
         setIsModalOpen(true);
     };
 
-
     const handleAddBalance = async () => {
         const numericValue = parseFloat(amountToAdd.replace(/[R$\s.]/g, '').replace(',', '.'));
         if (isNaN(numericValue)) return;
@@ -44,34 +44,35 @@ export default function Wallet() {
     };
 
     return (
-        <div className="bg-primary w-auto h-screen flex flex-col justify-between">
-            <div>
-                <Header title={"Carteira"} />
+        <div className="bg-primary w-full h-screen flex flex-col justify-between relative">
+            <Header title={"Carteira"} />
+            <div className="flex-grow overflow-hidden"> 
                 <WalletBalance
                     balance={balance}
                     isBalanceVisible={isBalanceVisible}
                     isLoading={isLoading}
                     toggleBalanceVisibility={() => toggleBalanceVisibility()}
                 />
+                
                 <PurchaseHistoryComponent purchaseHistory={purchaseHistory} />
-
             </div>
 
-            <div className="mb-5 flex items-center justify-around mx-3">
+            <div className="fixed bottom-0 left-0 w-full bg-primary-dark z-50 p-4 shadow-md flex items-center justify-around">
                 <Button onClick={() => navigate("/menu")}>Comprar produtos</Button>
                 <Button onClick={() => setIsModalOpen(true)}>Recarregar saldo</Button>
             </div>
 
             {isModalOpen && (
-                <Modal onClose={handleClose} >
-                    <h2 className="text-lg font-bold mb-4 text-white">Adicionar Saldo</h2>
-                    <input
+                <Modal onClose={handleClose}>
+                    <h2 className="text-lg font-bold mb-4 text-primary-dark">Adicionar Saldo</h2>
+                    <InputBox
+                        title="Digite o valor"
                         type="text"
-                        className="border border-gray-300 p-2 w-full mb-4"
-                        placeholder="Digite o valor"
+                        placeholder="R$ 0,00"
                         value={amountToAdd}
                         onChange={handleAmountChange}
                     />
+
                     <div className="flex justify-around space-x-3">
                         <Button onClick={() => setIsModalOpen(false)} className="bg-gray-300">Cancelar</Button>
                         <Button onClick={() => handleAddBalance()}>Adicionar</Button>

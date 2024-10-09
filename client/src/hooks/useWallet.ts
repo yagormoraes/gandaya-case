@@ -5,6 +5,7 @@ export interface PurchaseHistory {
     item: string;
     saleDate: string;
     price: number;
+    quantity: number;
 }
 
 export const useWallet = (userId: number) => {
@@ -13,17 +14,21 @@ export const useWallet = (userId: number) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchUserBalance = async () => {
+    const fetchUserBalance = async (): Promise<number> => {
         setIsLoading(true);
         try {
             const response = await axios.get(`http://localhost:3001/balance/${userId}`);
-            setBalance(response.data.balance);
+            const fetchedBalance = response.data.balance;
+            setBalance(fetchedBalance);
+            return fetchedBalance; 
         } catch (error) {
             setError('Erro ao buscar saldo');
+            return 0;
         } finally {
             setIsLoading(false);
         }
     };
+    
 
     const fetchPurchaseHistory = async () => {
         setIsLoading(true);
@@ -56,5 +61,5 @@ export const useWallet = (userId: number) => {
         fetchPurchaseHistory();
     }, [userId]);
 
-    return { balance, purchaseHistory, addUserBalance, isLoading, error };
+    return { balance, fetchUserBalance ,purchaseHistory, addUserBalance, isLoading, error };
 };

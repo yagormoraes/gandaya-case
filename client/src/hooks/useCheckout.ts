@@ -25,31 +25,40 @@ export const useCheckout = () => {
         }
     };
 
-    const completeCheckout = async (cart: { [key: number]: CartItem }): Promise<{ success: boolean, balance?: number }> => {
+    const completeCheckout = async (cart: { [key: number]: CartItem }): Promise<{ success: boolean; balance?: number }> => {
         try {
             const items = Object.values(cart).map(cartItem => ({
                 menuItemId: cartItem.id,
                 quantity: cartItem.quantity
             }));
+        
+            const body = { userId, items };
     
-            const body = {
-                userId,
-                items
-            };
-    
+
             const response = await axios.post("http://localhost:3001/checkout", body);
+            const walletResponse = await axios.get(`http://localhost:3001/balance/${userId}`);
     
-            const wallet = await axios.get(`http://localhost:3001/balance/${userId}`)
-            console.log("wallet", wallet)
-            if (response.data.message === "Purchase completed successfully") {
-                return { success: true, balance: wallet.data.balance}; 
+            const userBalance = walletResponse.data.balance;
+            const total = Object.values(cart).reduce((sum, cartItem) => {
+                return sum + cartItem.price * cartItem.quantity;
+            }, 0);
+    
+
+            if (userBalance < total) {
+                return { success: false }; 
             }
+    
+            if (response.data.message === "Purchase completed successfully") {
+                return { success: true, balance: userBalance - total };
+            }
+    
             return { success: false };
         } catch (error) {
             console.error("Erro ao completar o checkout:", error);
             return { success: false };
         }
     };
+    
     
 
     const failCheckout = async (cart: { [key: number]: CartItem }) => {

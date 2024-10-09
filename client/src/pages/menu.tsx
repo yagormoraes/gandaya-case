@@ -7,6 +7,7 @@ import Modal from "../components/Modal";
 import { useMenuItems, MenuItem } from "../hooks/useMenuItems";
 import Card from "../components/Card";
 import SearchBar from "../components/SearchBar";
+import InputBox from "../components/InputBox";
 
 export default function Menu() {
     const { menuItems, loading, error } = useMenuItems();
@@ -93,7 +94,7 @@ export default function Menu() {
     return (
         <>
             <Header title="Cardápio" showBackArrow />
-            <div className="px-4 ">
+            <div className="px-4">
                 <SearchBar
                     searchTerm={searchTerm}
                     onSearchChange={handleSearch}
@@ -105,7 +106,7 @@ export default function Menu() {
                 ) : error ? (
                     <div>{error}</div>
                 ) : (
-                    <div className="grid grid-cols-3 gap-x-6 justify-items-center ">
+                    <div className="grid grid-cols-3 gap-x-6 justify-items-center">
                         {filteredItems.map(item => (
                             <Card
                                 key={item.id}
@@ -135,19 +136,20 @@ export default function Menu() {
                         <p className="text-sm text-secondary font-bold">
                             Estoque disponível: {selectedItem.availableQuantity}
                         </p>
-                        <input
+                        
+                        <InputBox
+                            title="Quantidade"
                             type="number"
-                            value={quantityToAdd}
-                            onChange={(e) => setQuantityToAdd(Math.min(Number(e.target.value), selectedItem.availableQuantity))} 
-                            min={1}
-                            max={selectedItem.availableQuantity}
-                            className="border p-2 w-full mt-2"
+                            placeholder="Digite a quantidade"
+                            value={quantityToAdd.toString()} 
+                            onChange={(e) => setQuantityToAdd(Math.min(Number(e.target.value), selectedItem.availableQuantity))}
                         />
-                        <div className="flex justify-end space-x-3 mt-4">
+
+                        <div className="flex justify-around space-x-3 mt-4">
                             <Button onClick={handleCancel} className="bg-gray-300">
                                 Cancelar
                             </Button>
-                            <Button onClick={handleAddToCart}>Adicionar ao Carrinho</Button>
+                            <Button onClick={handleAddToCart}>Adicionar</Button>
                         </div>
                     </div>
                 </Modal>
