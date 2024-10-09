@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 interface QuantityButtonProps {
     quantity: number;
     availableQuantity: number;
@@ -17,16 +19,24 @@ export default function QuantityButton({
     width = "w-16" ,
     fontSize = "text-sm",
 }: QuantityButtonProps) {
+
+    const buttonVariants = {
+        tap: { scale: 0.9 }, 
+        hover: { scale: 1.05 }
+    };
+
     return (
         <div className={`bg-white border-secondary border-2 flex items-center rounded-lg ${height} ${width}`}>
-            <button
+            <motion.button
                 onClick={(e) => {
                     e.stopPropagation();
                     onDecrease();
                 }}
+                variants={buttonVariants}
+                whileTap="tap"
+                whileHover="hover"
                 className={`flex flex-col ${fontSize} items-center justify-center bg-secondary text-black h-full  
                     ${quantity >= availableQuantity ? "w-1/2 rounded-l-xs" : "rounded-l-xs w-1/3"
-                    
                 }`}
             >
                 {quantity > 1 ? (
@@ -34,22 +44,30 @@ export default function QuantityButton({
                 ) : (
                     <img src="/assets/trash.svg" alt="Remover item" className="w-2/5 h-2/3" /> 
                 )}
-            </button>
+            </motion.button>
 
-            <span className={`text-black font-bold text-center w-1/3  ${fontSize}`}>
+            <motion.span 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                className={`text-black font-bold text-center w-1/3  ${fontSize}`}
+            >
                 {quantity}
-            </span>
+            </motion.span>
 
             {quantity < availableQuantity && (
-                <button
+                <motion.button
                     onClick={(e) => {
                         e.stopPropagation();
                         onIncrease();
                     }}
+                    variants={buttonVariants}
+                    whileTap="tap"
+                    whileHover="hover"
                     className={`flex flex-col items-center justify-center bg-secondary text-black h-full rounded-r-xs w-1/3 ${fontSize}`}
                 >
                     +
-                </button>
+                </motion.button>
             )}
         </div>
     );

@@ -1,4 +1,5 @@
 import QuantityButton from './QuantityButton';
+import { fixEncoding } from '../utils/fixEncoding';
 
 interface CardProps {
   item: {
@@ -16,13 +17,6 @@ interface CardProps {
   onDecreaseQuantity: (item: any) => void;
 }
 
-const fixEncoding = (str: string) => {
-  try {
-    return decodeURIComponent(escape(str));
-  } catch (e) {
-    return str;
-  }
-};
 
 export default function Card({
   item,

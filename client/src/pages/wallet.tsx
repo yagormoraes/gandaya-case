@@ -7,12 +7,13 @@ import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
 import InputBox from "../components/InputBox";
+import PageWrapper from "../components/PageWrapper";
 
 export default function Wallet() {
     const navigate = useNavigate();
     const userId = 1;
     const { balance, purchaseHistory, addUserBalance, isLoading } = useWallet(userId);
-    const [isBalanceVisible, setIsBalanceVisible] = useState(true);
+    const [isBalanceVisible, setIsBalanceVisible] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [amountToAdd, setAmountToAdd] = useState('');
 
@@ -44,41 +45,44 @@ export default function Wallet() {
     };
 
     return (
-        <div className="bg-primary w-full h-screen flex flex-col justify-between relative">
-            <Header title={"Carteira"} />
-            <div className="flex-grow overflow-hidden"> 
-                <WalletBalance
-                    balance={balance}
-                    isBalanceVisible={isBalanceVisible}
-                    isLoading={isLoading}
-                    toggleBalanceVisibility={() => toggleBalanceVisibility()}
-                />
-                
-                <PurchaseHistoryComponent purchaseHistory={purchaseHistory} />
-            </div>
-
-            <div className="fixed bottom-0 left-0 w-full bg-primary-dark z-50 p-4 shadow-md flex items-center justify-around">
-                <Button onClick={() => navigate("/menu")}>Comprar produtos</Button>
-                <Button onClick={() => setIsModalOpen(true)}>Recarregar saldo</Button>
-            </div>
-
-            {isModalOpen && (
-                <Modal onClose={handleClose}>
-                    <h2 className="text-lg font-bold mb-4 text-primary-dark">Adicionar Saldo</h2>
-                    <InputBox
-                        title="Digite o valor"
-                        type="text"
-                        placeholder="R$ 0,00"
-                        value={amountToAdd}
-                        onChange={handleAmountChange}
+        <PageWrapper>
+            <div className="bg-primary w-full h-screen flex flex-col justify-between relative">
+                <Header title={"Carteira"} />
+                <div className="flex-grow overflow-hidden">
+                    <WalletBalance
+                        balance={balance}
+                        isBalanceVisible={isBalanceVisible}
+                        isLoading={isLoading}
+                        toggleBalanceVisibility={() => toggleBalanceVisibility()}
                     />
 
-                    <div className="flex justify-around space-x-3">
-                        <Button onClick={() => setIsModalOpen(false)} className="bg-gray-300">Cancelar</Button>
-                        <Button onClick={() => handleAddBalance()}>Adicionar</Button>
-                    </div>
-                </Modal>
-            )}
-        </div>
+                    <PurchaseHistoryComponent purchaseHistory={purchaseHistory} />
+                </div>
+
+                <div className="fixed bottom-0 left-0 w-full bg-primary-dark z-50 p-4 shadow-md flex items-center justify-around">
+                    <Button onClick={() => navigate("/menu")}>Comprar produtos</Button>
+                    <Button onClick={() => setIsModalOpen(true)}>Recarregar saldo</Button>
+                </div>
+
+                {isModalOpen && (
+                    <Modal onClose={handleClose}>
+                        <h2 className="text-lg font-bold mb-4 text-primary-dark">Adicionar Saldo</h2>
+                        <InputBox
+                            title="Digite o valor"
+                            type="text"
+                            placeholder="R$ 0,00"
+                            value={amountToAdd}
+                            onChange={handleAmountChange}
+                        />
+
+                        <div className="flex justify-around space-x-3">
+                            <Button onClick={() => setIsModalOpen(false)} className="bg-gray-300">Cancelar</Button>
+                            <Button onClick={() => handleAddBalance()}>Adicionar</Button>
+                        </div>
+                    </Modal>
+                )}
+            </div>
+        </PageWrapper>
+
     );
 }

@@ -8,6 +8,8 @@ import { useMenuItems, MenuItem } from "../hooks/useMenuItems";
 import Card from "../components/Card";
 import SearchBar from "../components/SearchBar";
 import InputBox from "../components/InputBox";
+import TotalFooter from "../components/TotalFooter";
+import PageWrapper from "../components/PageWrapper";
 
 export default function Menu() {
     const { menuItems, loading, error } = useMenuItems();
@@ -17,7 +19,7 @@ export default function Menu() {
     const [quantityToAdd, setQuantityToAdd] = useState<number>(1);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-    const { cart, addToCart, removeFromCart, total } = useCart(); 
+    const { cart, addToCart, removeFromCart, total } = useCart();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -50,8 +52,6 @@ export default function Menu() {
 
             if (itemWithQuantity.quantity <= selectedItem.availableQuantity) {
                 addToCart(itemWithQuantity, quantityToAdd);
-            } else {
-                alert(`Só há ${selectedItem.availableQuantity} unidades disponíveis.`);
             }
         }
         setIsModalOpen(false);
@@ -65,8 +65,6 @@ export default function Menu() {
         if (newQuantity <= item.availableQuantity) {
             const itemWithQuantity = { ...item, quantity: newQuantity };
             addToCart(itemWithQuantity, newQuantity);
-        } else {
-            alert(`Só há ${item.availableQuantity} unidades disponíveis.`);
         }
     };
 
@@ -93,80 +91,77 @@ export default function Menu() {
 
     return (
         <>
-            <Header title="Cardápio" showBackArrow />
-            <div className="px-4">
-                <SearchBar
-                    searchTerm={searchTerm}
-                    onSearchChange={handleSearch}
-                    placeholder="Buscar produto"
-                />
-
-                {loading ? (
-                    <div>Carregando...</div>
-                ) : error ? (
-                    <div>{error}</div>
-                ) : (
-                    <div className="grid grid-cols-3 gap-x-6 justify-items-center">
-                        {filteredItems.map(item => (
-                            <Card
-                                key={item.id}
-                                item={item}
-                                cartItem={cart[item.id]}
-                                onSelectItem={handleSelectItem}
-                                onIncreaseQuantity={handleIncreaseQuantity}
-                                onDecreaseQuantity={handleDecreaseQuantity}
-                            />
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            {isModalOpen && selectedItem && (
-                <Modal onClose={handleCancel}>
-                    <div>
-                        <img
-                            src={`/assets/${selectedItem.image}`}
-                            alt={selectedItem.item}
-                            className="w-48 h-48 object-cover rounded-md bg-white mx-auto"
-                        />
-                        <h2 className="text-xl text-white font-bold mt-4">{selectedItem.item}</h2>
-                        <p className="text-sm text-secondary font-bold">
-                            R$ {Number(selectedItem.price).toFixed(2).replace(".", ",")}
-                        </p>
-                        <p className="text-sm text-secondary font-bold">
-                            Estoque disponível: {selectedItem.availableQuantity}
-                        </p>
-                        
-                        <InputBox
-                            title="Quantidade"
-                            type="number"
-                            placeholder="Digite a quantidade"
-                            value={quantityToAdd.toString()} 
-                            onChange={(e) => setQuantityToAdd(Math.min(Number(e.target.value), selectedItem.availableQuantity))}
+            <PageWrapper>
+                <Header title="Cardápio" showBackArrow />
+                <div className="flex flex-col h-screen">
+                    <div className="flex-grow overflow-y-auto px-4">
+                        <SearchBar
+                            searchTerm={searchTerm}
+                            onSearchChange={handleSearch}
+                            placeholder="Buscar produto"
                         />
 
-                        <div className="flex justify-around space-x-3 mt-4">
-                            <Button onClick={handleCancel} className="bg-gray-300">
-                                Cancelar
-                            </Button>
-                            <Button onClick={handleAddToCart}>Adicionar</Button>
-                        </div>
+                        {loading ? (
+                            <div>Carregando...</div>
+                        ) : error ? (
+                            <div>{error}</div>
+                        ) : (
+                            <div className="grid grid-cols-3 gap-x-6 justify-items-center mt-4">
+                                {filteredItems.map(item => (
+                                    <Card
+                                        key={item.id}
+                                        item={item}
+                                        cartItem={cart[item.id]}
+                                        onSelectItem={handleSelectItem}
+                                        onIncreaseQuantity={handleIncreaseQuantity}
+                                        onDecreaseQuantity={handleDecreaseQuantity}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
-                </Modal>
-            )}
 
-            <div className="fixed bottom-0 w-full bg-primary-dark p-4 shadow-md">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <h3 className="text-sm text-white">Valor total:</h3>
-                        <p className="font-bold text-white text-3xl">
-                            R$ {total.toFixed(2).replace(".", ",")}
-                        </p>
-                    </div>
-
-                    <Button onClick={handleCheckout}>Confirmar</Button>
+                    <TotalFooter
+                        total={total}
+                        buttonText="Confirmar"
+                        onButtonClick={handleCheckout}
+                    />
                 </div>
-            </div>
+
+                {isModalOpen && selectedItem && (
+                    <Modal onClose={handleCancel}>
+                        <div>
+                            <img
+                                src={`/assets/${selectedItem.image}`}
+                                alt={selectedItem.item}
+                                className="w-48 h-48 object-cover rounded-md bg-white mx-auto"
+                            />
+                            <h2 className="text-xl text-white font-bold mt-4">{selectedItem.item}</h2>
+                            <p className="text-sm text-secondary font-bold">
+                                R$ {Number(selectedItem.price).toFixed(2).replace(".", ",")}
+                            </p>
+                            <p className="text-sm text-secondary font-bold">
+                                Estoque disponível: {selectedItem.availableQuantity}
+                            </p>
+
+                            <InputBox
+                                title="Quantidade"
+                                type="number"
+                                placeholder="Digite a quantidade"
+                                value={quantityToAdd.toString()}
+                                onChange={(e) => setQuantityToAdd(Math.min(Number(e.target.value), selectedItem.availableQuantity))}
+                            />
+
+                            <div className="flex justify-around space-x-3 mt-4">
+                                <Button onClick={handleCancel} className="bg-gray-300">
+                                    Cancelar
+                                </Button>
+                                <Button onClick={handleAddToCart}>Adicionar</Button>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+            </PageWrapper>
         </>
     );
 }

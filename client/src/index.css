@@ -6,7 +6,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Paytone+One&display=swap');
 
 body {
-    @apply font-fira;
+    @apply font-matter;
     @apply bg-primary
 }
 

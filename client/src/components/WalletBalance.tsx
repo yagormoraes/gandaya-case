@@ -12,7 +12,7 @@ const eyeSlashIcon = "/assets/eyeIconSlash.png";
 
 export default function WalletBalance({ balance, isBalanceVisible, isLoading, toggleBalanceVisibility }: WalletBalanceProps) {
     return (
-        <div className="flex items-center justify-between mx-3">
+        <div className="flex items-center justify-between mx-3 font-fira">
             <div>
                 <div className="text-primary-light text-sm pb-1 font-bold">Saldo disponível</div>
                 <div className="text-3xl text-white font-bold">

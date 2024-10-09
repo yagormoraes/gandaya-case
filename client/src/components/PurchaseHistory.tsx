@@ -8,7 +8,7 @@ interface PurchaseHistoryProps {
 
 export default function PurchaseHistoryComponent({ purchaseHistory }: PurchaseHistoryProps) {
     return (
-        <div className="mt-5 mx-3 flex flex-col items-start">
+        <div className="mt-5 mx-3 flex flex-col items-start font-fira">
             <div className="text-primary-light text-sm pb-1 font-semibold">Histórico de pedidos</div>
             <div className="overflow-y-auto h-[38rem] w-full mt-2">
                 {purchaseHistory.length > 0 ? (
