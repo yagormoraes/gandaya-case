@@ -134,6 +134,7 @@ export default function Checkout() {
                             buttonText="Confirmar"
                             onButtonClick={handleConfirmPurchase}
                             isProcessing={isProcessing}
+                            isButtonDisabled={Object.keys(localCart).length === 0}
                         />
                     )}
                 </div>

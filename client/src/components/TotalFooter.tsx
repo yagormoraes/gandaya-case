@@ -3,9 +3,10 @@ interface TotalFooterProps {
     buttonText: string;
     onButtonClick: () => void;
     isProcessing?: boolean;
-  }
-  
-  export default function TotalFooter({ total, buttonText, onButtonClick, isProcessing = false }: TotalFooterProps) {
+    isButtonDisabled: boolean; 
+}
+
+export default function TotalFooter({ total, buttonText, onButtonClick, isProcessing = false, isButtonDisabled }: TotalFooterProps) {
     return (
       <div className="fixed bottom-0 w-full bg-primary-dark p-4 shadow-md">
         <div className="flex justify-between items-center">
@@ -18,13 +19,12 @@ interface TotalFooterProps {
   
           <button
             onClick={onButtonClick}
-            disabled={isProcessing}
-            className={`bg-secondary text-black px-10 py-3 rounded-full font-bold ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={isProcessing || isButtonDisabled}  
+            className={`bg-secondary text-black px-10 py-3 rounded-full font-bold ${isProcessing || isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {buttonText}
           </button>
         </div>
       </div>
     );
-  }
-  
+}

@@ -125,6 +125,7 @@ export default function Menu() {
                         total={total}
                         buttonText="Confirmar"
                         onButtonClick={handleCheckout}
+                        isButtonDisabled={Object.keys(cart).length === 0} 
                     />
                 </div>
 
