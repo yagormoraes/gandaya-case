@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useWallet } from "../hooks/useWallet";
 import Header from "../components/Header";
 import WalletBalance from "../components/WalletBalance";
@@ -43,6 +43,10 @@ export default function Wallet() {
         await addUserBalance(numericValue);
         setIsModalOpen(false);
     };
+
+    useEffect(() => {
+        document.title = "Gandaya - Carteira";
+    }, []);
 
     return (
         <PageWrapper>

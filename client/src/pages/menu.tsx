@@ -89,6 +89,10 @@ export default function Menu() {
         navigate("/checkout", { state: { cart, total } });
     };
 
+    useEffect(() => {
+        document.title = "Gandaya - Menu";
+    }, []);
+
     return (
         <>
             <PageWrapper>

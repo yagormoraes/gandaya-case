@@ -89,6 +89,10 @@ export default function Checkout() {
         navigate("/menu");
     };
 
+    useEffect(() => {
+        document.title = "Gandaya - Checkout";
+    }, []);
+
     return (
         <>
             <PageWrapper>
